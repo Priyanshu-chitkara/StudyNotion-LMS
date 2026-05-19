@@ -1,16 +1,30 @@
 import { useEffect, useState } from 'react';
+
 import { toast } from 'react-toastify';
+
 import { useNavigate } from 'react-router-dom';
 
 import API from '../services/api';
+
 import Navbar from '../components/Navbar';
 
 function InstructorDashboard() {
 
-  const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [courses, setCourses] =
+    useState([]);
 
-  const [darkMode, setDarkMode] = useState(false);
+  const [loading, setLoading] =
+    useState(true);
+
+  const [darkMode, setDarkMode] =
+    useState(false);
+
+  // DELETE MODAL
+  const [showDeleteModal, setShowDeleteModal] =
+    useState(false);
+
+  const [selectedCourse, setSelectedCourse] =
+    useState(null);
 
   const navigate = useNavigate();
 
@@ -19,11 +33,14 @@ function InstructorDashboard() {
 
     try {
 
-      const res = await API.get(
-        '/course/instructor-courses'
-      );
+      const res =
+        await API.get(
+          '/course/instructor-courses'
+        );
 
-      setCourses(res.data.courses);
+      setCourses(
+        res.data.courses
+      );
 
     } catch (err) {
 
@@ -48,7 +65,7 @@ function InstructorDashboard() {
       );
 
       toast.success(
-        'Course deleted successfully 🗑️'
+        'Course moved to recycle bin 🗑️'
       );
 
       fetchCourses();
@@ -63,7 +80,9 @@ function InstructorDashboard() {
   };
 
   useEffect(() => {
+
     fetchCourses();
+
   }, []);
 
   return (
@@ -106,21 +125,40 @@ function InstructorDashboard() {
 
           </div>
 
-          {/* DARK MODE */}
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            className={
-              darkMode
-                ? 'bg-yellow-400 text-black px-6 py-3 rounded-2xl font-bold shadow-xl hover:scale-105 transition'
-                : 'bg-black text-white px-6 py-3 rounded-2xl font-bold shadow-xl hover:scale-105 transition'
-            }
-          >
+          {/* BUTTONS */}
+          <div className="flex gap-4">
 
-            {darkMode
-              ? '☀️ Light'
-              : '🌙 Dark'}
+            {/* RECYCLE BIN */}
+            <button
+              onClick={() =>
+                navigate('/recycle-bin')
+              }
+              className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-2xl font-bold shadow-xl hover:scale-105 transition"
+            >
 
-          </button>
+              ♻️ Recycle Bin
+
+            </button>
+
+            {/* DARK MODE */}
+            <button
+              onClick={() =>
+                setDarkMode(!darkMode)
+              }
+              className={
+                darkMode
+                  ? 'bg-yellow-400 text-black px-6 py-3 rounded-2xl font-bold shadow-xl hover:scale-105 transition'
+                  : 'bg-black text-white px-6 py-3 rounded-2xl font-bold shadow-xl hover:scale-105 transition'
+              }
+            >
+
+              {darkMode
+                ? '☀️ Light'
+                : '🌙 Dark'}
+
+            </button>
+
+          </div>
 
         </div>
 
@@ -144,7 +182,9 @@ function InstructorDashboard() {
           >
 
             <div className="text-7xl mb-5">
+
               📚
+
             </div>
 
             <p
@@ -249,90 +289,6 @@ function InstructorDashboard() {
 
                   </div>
 
-                  {/* ACTIVE STUDENTS */}
-                  <div className="mb-6">
-
-                    <p className="font-bold text-lg mb-3">
-
-                      Active Students 👇
-
-                    </p>
-
-                    {course.studentsEnrolled?.length > 0 ? (
-
-                      <div className="space-y-3 max-h-44 overflow-y-auto pr-2">
-
-                        {course.studentsEnrolled.map((student) => (
-
-                          <div
-                            key={student._id}
-                            className={
-                              darkMode
-                                ? 'bg-gray-800 p-3 rounded-2xl'
-                                : 'bg-gray-100 p-3 rounded-2xl'
-                            }
-                          >
-
-                            <p
-                              className={
-                                darkMode
-                                  ? 'font-semibold text-white'
-                                  : 'font-semibold text-gray-800'
-                              }
-                            >
-
-                              {student.firstName}
-                              {' '}
-                              {student.lastName}
-
-                            </p>
-
-                            <p
-                              className={
-                                darkMode
-                                  ? 'text-sm text-gray-400'
-                                  : 'text-sm text-gray-500'
-                              }
-                            >
-
-                              {student.email}
-
-                            </p>
-
-                          </div>
-
-                        ))}
-
-                      </div>
-
-                    ) : (
-
-                      <div
-                        className={
-                          darkMode
-                            ? 'bg-gray-800 rounded-2xl p-4 text-center'
-                            : 'bg-gray-100 rounded-2xl p-4 text-center'
-                        }
-                      >
-
-                        <p
-                          className={
-                            darkMode
-                              ? 'text-gray-400'
-                              : 'text-gray-500'
-                          }
-                        >
-
-                          No students enrolled yet
-
-                        </p>
-
-                      </div>
-
-                    )}
-
-                  </div>
-
                   {/* VIDEO */}
                   <div className="mb-6">
 
@@ -364,7 +320,9 @@ function InstructorDashboard() {
                       >
 
                         <div className="text-5xl mb-3">
+
                           🎬
+
                         </div>
 
                         <p
@@ -404,9 +362,13 @@ function InstructorDashboard() {
 
                     {/* DELETE */}
                     <button
-                      onClick={() =>
-                        deleteCourse(course._id)
-                      }
+                      onClick={() => {
+
+                        setShowDeleteModal(true);
+
+                        setSelectedCourse(course._id);
+
+                      }}
                       className="flex-1 bg-gradient-to-r from-red-500 to-pink-500 text-white py-3 rounded-2xl font-bold hover:scale-[1.02] transition duration-300 shadow-lg"
                     >
 
@@ -427,6 +389,93 @@ function InstructorDashboard() {
         )}
 
       </div>
+
+      {/* DELETE MODAL */}
+      {
+        showDeleteModal && (
+
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50">
+
+            <div
+              className={
+                darkMode
+                  ? 'bg-gray-900 p-8 rounded-3xl shadow-2xl w-[90%] max-w-md border border-gray-700'
+                  : 'bg-white p-8 rounded-3xl shadow-2xl w-[90%] max-w-md'
+              }
+            >
+
+              <div className="text-6xl text-center mb-4">
+
+                🗑️
+
+              </div>
+
+              <h2
+                className={
+                  darkMode
+                    ? 'text-3xl font-black text-center text-white mb-4'
+                    : 'text-3xl font-black text-center text-gray-800 mb-4'
+                }
+              >
+
+                Delete Course?
+
+              </h2>
+
+              <p
+                className={
+                  darkMode
+                    ? 'text-gray-400 text-center mb-8'
+                    : 'text-gray-600 text-center mb-8'
+                }
+              >
+
+                This course will move to recycle bin
+                and can be restored within 10 days.
+
+              </p>
+
+              {/* BUTTONS */}
+              <div className="flex gap-4">
+
+                {/* CANCEL */}
+                <button
+                  onClick={() =>
+                    setShowDeleteModal(false)
+                  }
+                  className="flex-1 bg-gray-300 text-black py-3 rounded-2xl font-bold hover:scale-[1.02] transition"
+                >
+
+                  Cancel
+
+                </button>
+
+                {/* DELETE */}
+                <button
+                  onClick={() => {
+
+                    deleteCourse(
+                      selectedCourse
+                    );
+
+                    setShowDeleteModal(false);
+
+                  }}
+                  className="flex-1 bg-gradient-to-r from-red-500 to-pink-500 text-white py-3 rounded-2xl font-bold hover:scale-[1.02] transition"
+                >
+
+                  Move to Bin
+
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        )
+      }
 
     </div>
   );

@@ -1,28 +1,45 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+} from 'react-router-dom';
+
 import CourseDetails from './pages/CourseDetails';
 
-// Toast
+// TOAST
 import { ToastContainer } from 'react-toastify';
+
 import 'react-toastify/dist/ReactToastify.css';
 
-// Pages
+// PAGES
 import Login from './pages/Login';
+
 import Signup from './pages/Signup';
+
 import Courses from './pages/Courses';
+
 import MyCourses from './pages/MyCourses';
+
 import CreateCourse from './pages/CreateCourse';
+
 import VerifyOtp from './pages/VerifyOtp';
 
-// Protected
-import ProtectedRoute from './components/ProtectedRoute';
 import InstructorDashboard from './pages/InstructorDashboard';
+
 import EditCourse from './pages/EditCourse';
 
+import RecycleBin from './pages/RecycleBin';
+
+// PROTECTED ROUTE
+import ProtectedRoute from './components/ProtectedRoute';
+
 function App() {
+
   return (
+
     <BrowserRouter>
 
-      {/* 🔥 Toast Container */}
+      {/* TOAST */}
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -35,62 +52,110 @@ function App() {
 
       <Routes>
 
-        <Route path="/" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/verify-otp" element={<VerifyOtp />} />
+        {/* LOGIN */}
+        <Route
+          path="/"
+          element={<Login />}
+        />
 
+        {/* SIGNUP */}
+        <Route
+          path="/signup"
+          element={<Signup />}
+        />
+
+        {/* OTP */}
+        <Route
+          path="/verify-otp"
+          element={<VerifyOtp />}
+        />
+
+        {/* COURSES */}
         <Route
           path="/courses"
           element={
             <ProtectedRoute>
+
               <Courses />
+
             </ProtectedRoute>
           }
         />
 
+        {/* MY COURSES */}
         <Route
           path="/my-courses"
           element={
             <ProtectedRoute>
+
               <MyCourses />
+
             </ProtectedRoute>
           }
         />
-        <Route
-  path="/course/:id"
-  element={
-    <ProtectedRoute>
-      <CourseDetails />
-    </ProtectedRoute>
-  }
-/>
-<Route
-  path="/edit-course/:id"
-  element={
-    <ProtectedRoute>
-      <EditCourse />
-    </ProtectedRoute>
-  }
-/>
 
+        {/* COURSE DETAILS */}
+        <Route
+          path="/course/:id"
+          element={
+            <ProtectedRoute>
+
+              <CourseDetails />
+
+            </ProtectedRoute>
+          }
+        />
+
+        {/* CREATE COURSE */}
         <Route
           path="/create-course"
           element={
             <ProtectedRoute>
+
               <CreateCourse />
+
             </ProtectedRoute>
           }
         />
+
+        {/* EDIT COURSE */}
         <Route
-  path="/instructor-dashboard"
-  element={
-    <ProtectedRoute>
-      <InstructorDashboard />
-    </ProtectedRoute>
-  }
-/>
+          path="/edit-course/:id"
+          element={
+            <ProtectedRoute>
+
+              <EditCourse />
+
+            </ProtectedRoute>
+          }
+        />
+
+        {/* INSTRUCTOR DASHBOARD */}
+        <Route
+          path="/instructor-dashboard"
+          element={
+            <ProtectedRoute>
+
+              <InstructorDashboard />
+
+            </ProtectedRoute>
+          }
+        />
+
+        {/* RECYCLE BIN */}
+        <Route
+          path="/recycle-bin"
+          element={
+            <ProtectedRoute>
+
+              <RecycleBin />
+
+            </ProtectedRoute>
+          }
+        />
 
       </Routes>
+
     </BrowserRouter>
   );
 }
