@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://studynotion-lms-1-8lfd.onrender.com/api",
+  baseURL: "https://studynotion-lms-xiqz.onrender.com/api"
   withCredentials: true,
 });
 
