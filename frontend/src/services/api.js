@@ -1,11 +1,10 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://studynotion-lms-l8lfd.onrender.com/api",
+  baseURL: "https://studynotion-lms-1-8lfd.onrender.com/api",
   withCredentials: true,
 });
 
-// TOKEN INTERCEPTOR
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
 
