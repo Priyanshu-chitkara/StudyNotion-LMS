@@ -14,7 +14,14 @@ const app = express();
 // 🔥 Connect DB AFTER env loaded
 connectDB();
 
-app.use(cors());
+const cors = require("cors");
+
+app.use(cors({
+  origin: [
+    "https://study-notion-lms-omega.vercel.app"
+  ],
+  credentials: true
+}));
 app.use(express.json());
 app.get('/', (req, res) => {
   res.json({ message: '🚀 Server is running!' });
