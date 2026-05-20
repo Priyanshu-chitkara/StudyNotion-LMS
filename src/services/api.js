@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'https://studynotion-lms-xiqz.onrender.com',
+  baseURL: "https://studynotion-lms-18lfd.onrender.com",
 });
 
 // 🔥 interceptor
