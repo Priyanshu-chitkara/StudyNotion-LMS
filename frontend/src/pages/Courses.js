@@ -57,7 +57,7 @@ function Courses() {
 
     try {
 
-      const res = await API.get('/course/all');
+      const res = await API.get('/course');
 
       setCourses(res.data.courses);
 
