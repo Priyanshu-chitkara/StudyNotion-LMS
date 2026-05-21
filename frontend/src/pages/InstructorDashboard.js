@@ -271,125 +271,93 @@ function InstructorDashboard() {
                   </p>
 
                   {/* STUDENTS */}
-                  <div
-                    className={
-                      darkMode
-                        ? 'bg-purple-900/30 rounded-2xl p-4 mb-5'
-                        : 'bg-purple-50 rounded-2xl p-4 mb-5'
-                    }
-                  >
+                 {/* STUDENTS */}
+<div
+  className={
+    darkMode
+      ? 'bg-purple-900/30 rounded-2xl p-4 mb-5'
+      : 'bg-purple-50 rounded-2xl p-4 mb-5'
+  }
+>
 
-                    <p className="text-lg font-bold text-purple-400">
+  <p className="text-lg font-bold text-purple-400 mb-4">
 
-                      👨‍🎓 Students Enrolled:
-                      {' '}
-                      {course.studentsEnrolled?.length || 0}
+    👨‍🎓 Students Enrolled:
+    {' '}
+    {course.studentsEnrolled?.length || 0}
 
-                    </p>
+  </p>
 
-                  </div>
+  {/* STUDENT LIST */}
+  {
+    course.studentsEnrolled &&
+    course.studentsEnrolled.length > 0 ? (
 
-                  {/* VIDEO */}
-                  <div className="mb-6">
+      <div className="space-y-3">
 
-                    <h4 className="font-bold text-lg mb-3">
+        {
+          course.studentsEnrolled.map((student) => (
 
-                      🎥 Demo Video
+            <div
+              key={student._id}
+              className={
+                darkMode
+                  ? 'bg-gray-800 p-4 rounded-2xl border border-gray-700'
+                  : 'bg-white p-4 rounded-2xl border border-purple-100 shadow-sm'
+              }
+            >
 
-                    </h4>
+              {/* NAME */}
+              <p
+                className={
+                  darkMode
+                    ? 'text-white font-bold text-lg'
+                    : 'text-gray-800 font-bold text-lg'
+                }
+              >
 
-                    {course.video ? (
+                👤 {student.firstName} {student.lastName}
 
-                      <video
-                        controls
-                        className="w-full rounded-2xl shadow-lg"
-                      >
+              </p>
 
-                        <source src={course.video} />
+              {/* EMAIL */}
+              <p
+                className={
+                  darkMode
+                    ? 'text-gray-300 text-sm mt-1 break-all'
+                    : 'text-gray-600 text-sm mt-1 break-all'
+                }
+              >
 
-                      </video>
+                📧 {student.email}
 
-                    ) : (
+              </p>
 
-                      <div
-                        className={
-                          darkMode
-                            ? 'bg-gray-800 rounded-2xl p-6 text-center'
-                            : 'bg-gray-100 rounded-2xl p-6 text-center'
-                        }
-                      >
+            </div>
 
-                        <div className="text-5xl mb-3">
-
-                          🎬
-
-                        </div>
-
-                        <p
-                          className={
-                            darkMode
-                              ? 'text-gray-400'
-                              : 'text-gray-500'
-                          }
-                        >
-
-                          No demo video uploaded
-
-                        </p>
-
-                      </div>
-
-                    )}
-
-                  </div>
-
-                  {/* ACTION BUTTONS */}
-                  <div className="flex gap-4">
-
-                    {/* EDIT */}
-                    <button
-                      onClick={() =>
-                        navigate(
-                          `/edit-course/${course._id}`
-                        )
-                      }
-                      className="flex-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-white py-3 rounded-2xl font-bold hover:scale-[1.02] transition duration-300 shadow-lg"
-                    >
-
-                      ✏️ Edit
-
-                    </button>
-
-                    {/* DELETE */}
-                    <button
-                      onClick={() => {
-
-                        setShowDeleteModal(true);
-
-                        setSelectedCourse(course._id);
-
-                      }}
-                      className="flex-1 bg-gradient-to-r from-red-500 to-pink-500 text-white py-3 rounded-2xl font-bold hover:scale-[1.02] transition duration-300 shadow-lg"
-                    >
-
-                      🗑️ Delete
-
-                    </button>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            ))}
-
-          </div>
-
-        )}
+          ))
+        }
 
       </div>
 
+    ) : (
+
+      <p
+        className={
+          darkMode
+            ? 'text-gray-400'
+            : 'text-gray-500'
+        }
+      >
+
+        No students enrolled yet
+
+      </p>
+
+    )
+  }
+
+</div>
       {/* DELETE MODAL */}
       {
         showDeleteModal && (
