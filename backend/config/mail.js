@@ -1,13 +1,14 @@
 const nodemailer = require('nodemailer');
 
-console.log("EMAIL_USER:", process.env.EMAIL_USER);
-console.log("EMAIL_PASS:", process.env.EMAIL_PASS ? "Loaded ✅" : "Missing ❌");
+console.log("MAILTRAP_USER:", process.env.MAILTRAP_USER);
+console.log("MAILTRAP_PASS:", process.env.MAILTRAP_PASS ? "Loaded ✅" : "Missing ❌");
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: "sandbox.smtp.mailtrap.io",
+  port: 2525,
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: process.env.MAILTRAP_USER,
+    pass: process.env.MAILTRAP_PASS,
   },
 });
 
