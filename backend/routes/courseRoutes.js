@@ -23,6 +23,7 @@ const {
 
 const auth = require('../middleware/authMiddleware');
 
+// ================= CREATE COURSE =================
 router.post(
   '/create',
   auth,
@@ -33,18 +34,47 @@ router.post(
   createCourse
 );
 
+// ================= GET ALL COURSES =================
 router.get('/', getAllCourses);
 
-router.get('/my-courses', auth, getMyCourses);
+// SUPPORT OLD FRONTEND ROUTE
+router.get('/all', getAllCourses);
 
-router.get('/instructor-courses', auth, getInstructorCourses);
+// ================= MY COURSES =================
+router.get(
+  '/my-courses',
+  auth,
+  getMyCourses
+);
 
-router.get('/deleted', auth, getDeletedCourses);
+// ================= INSTRUCTOR COURSES =================
+router.get(
+  '/instructor-courses',
+  auth,
+  getInstructorCourses
+);
 
-router.get('/:courseId', getCourseById);
+// ================= RECYCLE BIN =================
+router.get(
+  '/deleted',
+  auth,
+  getDeletedCourses
+);
 
-router.post('/enroll', auth, enrollCourse);
+// ================= SINGLE COURSE =================
+router.get(
+  '/:courseId',
+  getCourseById
+);
 
+// ================= ENROLL =================
+router.post(
+  '/enroll',
+  auth,
+  enrollCourse
+);
+
+// ================= UPDATE COURSE =================
 router.put(
   '/update/:courseId',
   auth,
@@ -55,8 +85,18 @@ router.put(
   updateCourse
 );
 
-router.put('/restore/:courseId', auth, restoreCourse);
+// ================= RESTORE COURSE =================
+router.put(
+  '/restore/:courseId',
+  auth,
+  restoreCourse
+);
 
-router.delete('/delete/:courseId', auth, deleteCourse);
+// ================= DELETE COURSE =================
+router.delete(
+  '/delete/:courseId',
+  auth,
+  deleteCourse
+);
 
 module.exports = router;
