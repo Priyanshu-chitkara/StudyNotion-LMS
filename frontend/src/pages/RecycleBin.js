@@ -25,9 +25,8 @@ function RecycleBin() {
       try {
 
         const res =
-          await API.get(
-            '/course/recycle-bin'
-          );
+          await API.get('/course/deleted')
+          ;
 
         setCourses(
           res.data.courses
