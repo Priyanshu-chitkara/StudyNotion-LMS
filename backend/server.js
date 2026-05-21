@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
-const fileUpload = require('express-fileupload');
+
 
 const connectDB = require('./config/db');
 
@@ -22,13 +22,13 @@ app.use(cors({
 }));
 
 // ================= FILE UPLOAD =================
-app.use(fileUpload({
-  useTempFiles: true,
-  tempFileDir: '/tmp/',
-  limits: {
-    fileSize: 500 * 1024 * 1024,
-  },
-}));
+// app.use(fileUpload({
+//   useTempFiles: true,
+//   tempFileDir: '/tmp/',
+//   limits: {
+//     fileSize: 500 * 1024 * 1024,
+//   },
+// }));
 
 // ================= BODY PARSER =================
 app.use(express.json());

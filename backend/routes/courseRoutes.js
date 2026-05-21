@@ -2,196 +2,61 @@ const express = require('express');
 
 const router = express.Router();
 
-const authMiddleware =
-  require('../middleware/authMiddleware');
+const multer = require('multer');
+
+const storage = multer.memoryStorage();
+
+const upload = multer({ storage });
 
 const {
-  authorizeRoles,
-} = require('../middleware/roleMiddleware');
-
-// MULTER
-const upload =
-  require('../middleware/multer');
-
-// CONTROLLERS
-const {
-
   createCourse,
-
   getAllCourses,
-
-  enrollCourse,
-
-  getMyCourses,
-
-  getInstructorCourses,
-
   getCourseById,
-
+  enrollCourse,
+  getMyCourses,
+  getInstructorCourses,
   updateCourse,
-
   deleteCourse,
-
-  // RECYCLE BIN
   getDeletedCourses,
-
   restoreCourse,
-
 } = require('../controllers/courseController');
 
+const auth = require('../middleware/auth');
 
-// ================= CREATE COURSE =================
 router.post(
-
   '/create',
-
-  authMiddleware,
-
-  authorizeRoles('instructor'),
-
+  auth,
   upload.fields([
-
-    {
-      name: 'image',
-      maxCount: 1,
-    },
-
-    {
-      name: 'video',
-      maxCount: 1,
-    },
-
+    { name: 'image', maxCount: 1 },
+    { name: 'video', maxCount: 1 },
   ]),
-
   createCourse
 );
 
+router.get('/', getAllCourses);
 
-// ================= GET ALL COURSES =================
-router.get(
+router.get('/my-courses', auth, getMyCourses);
 
-  '/all',
+router.get('/instructor-courses', auth, getInstructorCourses);
 
-  authMiddleware,
+router.get('/deleted', auth, getDeletedCourses);
 
-  getAllCourses
-);
+router.get('/:courseId', getCourseById);
 
+router.post('/enroll', auth, enrollCourse);
 
-// ================= ENROLL COURSE =================
-router.post(
-
-  '/enroll',
-
-  authMiddleware,
-
-  authorizeRoles('student'),
-
-  enrollCourse
-);
-
-
-// ================= STUDENT DASHBOARD =================
-router.get(
-
-  '/my-courses',
-
-  authMiddleware,
-
-  authorizeRoles('student'),
-
-  getMyCourses
-);
-
-
-// ================= INSTRUCTOR DASHBOARD =================
-router.get(
-
-  '/instructor-courses',
-
-  authMiddleware,
-
-  authorizeRoles('instructor'),
-
-  getInstructorCourses
-);
-
-
-// ================= UPDATE COURSE =================
 router.put(
-
   '/update/:courseId',
-
-  authMiddleware,
-
-  authorizeRoles('instructor'),
-
+  auth,
   upload.fields([
-
-    {
-      name: 'image',
-      maxCount: 1,
-    },
-
-    {
-      name: 'video',
-      maxCount: 1,
-    },
-
+    { name: 'image', maxCount: 1 },
+    { name: 'video', maxCount: 1 },
   ]),
-
   updateCourse
 );
 
+router.put('/restore/:courseId', auth, restoreCourse);
 
-// ================= DELETE COURSE =================
-router.delete(
-
-  '/delete/:courseId',
-
-  authMiddleware,
-
-  authorizeRoles('instructor'),
-
-  deleteCourse
-);
-
-
-// ================= RECYCLE BIN =================
-router.get(
-
-  '/recycle-bin',
-
-  authMiddleware,
-
-  authorizeRoles('instructor'),
-
-  getDeletedCourses
-);
-
-
-// ================= RESTORE COURSE =================
-router.put(
-
-  '/restore/:courseId',
-
-  authMiddleware,
-
-  authorizeRoles('instructor'),
-
-  restoreCourse
-);
-
-
-// ================= GET SINGLE COURSE =================
-router.get(
-
-  '/:courseId',
-
-  authMiddleware,
-
-  getCourseById
-);
-
+router.delete('/delete/:courseId', auth, deleteCourse);
 
 module.exports = router;

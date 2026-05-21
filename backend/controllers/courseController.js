@@ -1,5 +1,41 @@
 const Course = require('../models/Course');
 const cloudinary = require('../config/cloudinary');
+const streamifier = require('streamifier');
+
+// ================= CLOUDINARY BUFFER HELPER =================
+const uploadFromBuffer = (
+  buffer,
+  resourceType = 'image'
+) => {
+
+  return new Promise((resolve, reject) => {
+
+    const stream =
+      cloudinary.uploader.upload_stream(
+
+        {
+          resource_type: resourceType,
+          folder: 'StudyNotion/Courses',
+        },
+
+        (error, result) => {
+
+          if (error) {
+
+            reject(error);
+
+          } else {
+
+            resolve(result);
+          }
+        }
+      );
+
+    streamifier
+      .createReadStream(buffer)
+      .pipe(stream);
+  });
+};
 
 // ================= CREATE COURSE =================
 const createCourse = async (req, res) => {
@@ -29,28 +65,22 @@ const createCourse = async (req, res) => {
       const text =
         `${title} ${description}`.toLowerCase();
 
-      // DSA
       if (
         text.includes('dsa') ||
-        text.includes('data structure') ||
         text.includes('algorithm')
       ) {
 
         return 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4';
       }
 
-      // WEB DEVELOPMENT
       if (
         text.includes('web') ||
-        text.includes('html') ||
-        text.includes('css') ||
         text.includes('javascript')
       ) {
 
         return 'https://images.unsplash.com/photo-1498050108023-c5249f4df085';
       }
 
-      // JAVA
       if (
         text.includes('java')
       ) {
@@ -58,7 +88,6 @@ const createCourse = async (req, res) => {
         return 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97';
       }
 
-      // PYTHON
       if (
         text.includes('python')
       ) {
@@ -66,26 +95,6 @@ const createCourse = async (req, res) => {
         return 'https://images.unsplash.com/photo-1526379095098-d400fd0bf935';
       }
 
-      // ENGLISH / COMMUNICATION
-      if (
-        text.includes('english') ||
-        text.includes('communication')
-      ) {
-
-        return 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f';
-      }
-
-      // MARKETING / FINANCE
-      if (
-        text.includes('marketing') ||
-        text.includes('stock') ||
-        text.includes('finance')
-      ) {
-
-        return 'https://images.unsplash.com/photo-1460925895917-afdab827c52f';
-      }
-
-      // DEFAULT
       return 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3';
     };
 
@@ -95,11 +104,9 @@ const createCourse = async (req, res) => {
       console.log("Uploading image...");
 
       const imageResult =
-        await cloudinary.uploader.upload(
-          req.files.image.tempFilePath,
-          {
-            folder: "StudyNotion/Courses",
-          }
+        await uploadFromBuffer(
+          req.files.image[0].buffer,
+          'image'
         );
 
       imageUrl =
@@ -114,12 +121,9 @@ const createCourse = async (req, res) => {
       console.log("Uploading video...");
 
       const videoResult =
-        await cloudinary.uploader.upload(
-          req.files.video.tempFilePath,
-          {
-            resource_type: 'video',
-            folder: "StudyNotion/Courses",
-          }
+        await uploadFromBuffer(
+          req.files.video[0].buffer,
+          'video'
         );
 
       videoUrl =
@@ -288,7 +292,6 @@ const enrollCourse = async (req, res) => {
       });
     }
 
-    // ALREADY ENROLLED
     if (
       course.studentsEnrolled.includes(
         req.user._id
@@ -301,7 +304,6 @@ const enrollCourse = async (req, res) => {
       });
     }
 
-    // ADD STUDENT
     course.studentsEnrolled.push(
       req.user._id
     );
@@ -427,7 +429,6 @@ const updateCourse = async (req, res) => {
       });
     }
 
-    // ONLY OWNER CAN EDIT
     if (
       course.instructor.toString() !==
       req.user.id
@@ -439,7 +440,6 @@ const updateCourse = async (req, res) => {
       });
     }
 
-    // UPDATE FIELDS
     if (title) {
 
       course.title = title;
@@ -456,47 +456,30 @@ const updateCourse = async (req, res) => {
       course.price = price;
     }
 
-    // IMAGE
+    // IMAGE UPDATE
     if (req.files?.image) {
 
-      console.log(
-        "Uploading new image..."
-      );
-
       const imageResult =
-        await cloudinary.uploader.upload(
-          req.files.image.tempFilePath,
-          {
-            folder: "StudyNotion/Courses",
-          }
+        await uploadFromBuffer(
+          req.files.image[0].buffer,
+          'image'
         );
 
       course.image =
         imageResult.secure_url;
-
-      console.log("UPDATED IMAGE:", course.image);
     }
 
-    // VIDEO
+    // VIDEO UPDATE
     if (req.files?.video) {
 
-      console.log(
-        "Uploading new video..."
-      );
-
       const videoResult =
-        await cloudinary.uploader.upload(
-          req.files.video.tempFilePath,
-          {
-            resource_type: 'video',
-            folder: "StudyNotion/Courses",
-          }
+        await uploadFromBuffer(
+          req.files.video[0].buffer,
+          'video'
         );
 
       course.video =
         videoResult.secure_url;
-
-      console.log("UPDATED VIDEO:", course.video);
     }
 
     await course.save();
@@ -542,7 +525,6 @@ const deleteCourse = async (req, res) => {
       });
     }
 
-    // ONLY OWNER CAN DELETE
     if (
       course.instructor.toString() !==
       req.user._id.toString()
@@ -554,7 +536,6 @@ const deleteCourse = async (req, res) => {
       });
     }
 
-    // SOFT DELETE
     course.isDeleted = true;
 
     course.deletedAt = new Date();
@@ -648,7 +629,6 @@ const restoreCourse = async (req, res) => {
       });
     }
 
-    // ONLY OWNER CAN RESTORE
     if (
       course.instructor.toString() !==
       req.user._id.toString()
@@ -687,7 +667,6 @@ const restoreCourse = async (req, res) => {
   }
 };
 
-// ================= EXPORT =================
 module.exports = {
 
   createCourse,
