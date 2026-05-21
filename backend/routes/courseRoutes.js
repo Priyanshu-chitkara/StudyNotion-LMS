@@ -21,7 +21,7 @@ const {
   restoreCourse,
 } = require('../controllers/courseController');
 
-const auth = require('../middleware/auth');
+const auth = require('../authMiddleware/auth');
 
 router.post(
   '/create',
