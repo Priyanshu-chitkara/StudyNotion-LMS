@@ -21,10 +21,9 @@ const createCourse = async (req, res) => {
     }
 
     let imageUrl = '';
-
     let videoUrl = '';
 
-    // SMART DEFAULT IMAGE
+    // DEFAULT IMAGE FUNCTION
     const getDefaultImage = () => {
 
       const text =
@@ -76,7 +75,7 @@ const createCourse = async (req, res) => {
         return 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f';
       }
 
-      // MARKETING / STOCK MARKET
+      // MARKETING / FINANCE
       if (
         text.includes('marketing') ||
         text.includes('stock') ||
@@ -90,46 +89,52 @@ const createCourse = async (req, res) => {
       return 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3';
     };
 
-    // IMAGE UPLOAD
+    // ================= IMAGE UPLOAD =================
     if (req.files?.image) {
 
       console.log("Uploading image...");
 
       const imageResult =
         await cloudinary.uploader.upload(
-          req.files.image[0].path
+          req.files.image.tempFilePath,
+          {
+            folder: "StudyNotion/Courses",
+          }
         );
 
       imageUrl =
         imageResult.secure_url;
+
+      console.log("IMAGE URL:", imageUrl);
     }
 
-    // VIDEO UPLOAD
+    // ================= VIDEO UPLOAD =================
     if (req.files?.video) {
 
       console.log("Uploading video...");
 
       const videoResult =
         await cloudinary.uploader.upload(
-          req.files.video[0].path,
+          req.files.video.tempFilePath,
           {
             resource_type: 'video',
+            folder: "StudyNotion/Courses",
           }
         );
 
-      console.log(videoResult);
-
       videoUrl =
         videoResult.secure_url;
+
+      console.log("VIDEO URL:", videoUrl);
     }
 
-    // DEFAULT IMAGE
+    // ================= DEFAULT IMAGE =================
     if (!imageUrl) {
 
       imageUrl = getDefaultImage();
     }
 
-    // CREATE COURSE
+    // ================= CREATE COURSE =================
     const course = await Course.create({
 
       title,
@@ -460,11 +465,16 @@ const updateCourse = async (req, res) => {
 
       const imageResult =
         await cloudinary.uploader.upload(
-          req.files.image[0].path
+          req.files.image.tempFilePath,
+          {
+            folder: "StudyNotion/Courses",
+          }
         );
 
       course.image =
         imageResult.secure_url;
+
+      console.log("UPDATED IMAGE:", course.image);
     }
 
     // VIDEO
@@ -476,16 +486,17 @@ const updateCourse = async (req, res) => {
 
       const videoResult =
         await cloudinary.uploader.upload(
-          req.files.video[0].path,
+          req.files.video.tempFilePath,
           {
             resource_type: 'video',
+            folder: "StudyNotion/Courses",
           }
         );
 
-      console.log(videoResult);
-
       course.video =
         videoResult.secure_url;
+
+      console.log("UPDATED VIDEO:", course.video);
     }
 
     await course.save();
@@ -576,14 +587,12 @@ const getDeletedCourses = async (req, res) => {
 
   try {
 
-    // AUTO DELETE AFTER 10 DAYS
     const tenDaysAgo =
       new Date(
         Date.now() -
         10 * 24 * 60 * 60 * 1000
       );
 
-    // DELETE OLD COURSES
     await Course.deleteMany({
 
       isDeleted: true,
@@ -594,7 +603,6 @@ const getDeletedCourses = async (req, res) => {
 
     });
 
-    // FETCH DELETED COURSES
     const courses = await Course.find({
 
       instructor: req.user._id,
@@ -652,7 +660,6 @@ const restoreCourse = async (req, res) => {
       });
     }
 
-    // RESTORE
     course.isDeleted = false;
 
     course.deletedAt = null;
