@@ -271,93 +271,191 @@ function InstructorDashboard() {
                   </p>
 
                   {/* STUDENTS */}
-                 {/* STUDENTS */}
-<div
-  className={
-    darkMode
-      ? 'bg-purple-900/30 rounded-2xl p-4 mb-5'
-      : 'bg-purple-50 rounded-2xl p-4 mb-5'
-  }
->
+                  <div
+                    className={
+                      darkMode
+                        ? 'bg-purple-900/30 rounded-2xl p-4 mb-5'
+                        : 'bg-purple-50 rounded-2xl p-4 mb-5'
+                    }
+                  >
 
-  <p className="text-lg font-bold text-purple-400 mb-4">
+                    <p className="text-lg font-bold text-purple-400 mb-4">
 
-    👨‍🎓 Students Enrolled:
-    {' '}
-    {course.studentsEnrolled?.length || 0}
+                      👨‍🎓 Students Enrolled:
+                      {' '}
+                      {course.studentsEnrolled?.length || 0}
 
-  </p>
+                    </p>
 
-  {/* STUDENT LIST */}
-  {
-    course.studentsEnrolled &&
-    course.studentsEnrolled.length > 0 ? (
+                    {
+                      course.studentsEnrolled &&
+                      course.studentsEnrolled.length > 0 ? (
 
-      <div className="space-y-3">
+                        <div className="space-y-3">
 
-        {
-          course.studentsEnrolled.map((student) => (
+                          {
+                            course.studentsEnrolled.map((student) => (
 
-            <div
-              key={student._id}
-              className={
-                darkMode
-                  ? 'bg-gray-800 p-4 rounded-2xl border border-gray-700'
-                  : 'bg-white p-4 rounded-2xl border border-purple-100 shadow-sm'
-              }
-            >
+                              <div
+                                key={student._id}
+                                className={
+                                  darkMode
+                                    ? 'bg-gray-800 p-4 rounded-2xl border border-gray-700'
+                                    : 'bg-white p-4 rounded-2xl border border-purple-100 shadow-sm'
+                                }
+                              >
 
-              {/* NAME */}
-              <p
-                className={
-                  darkMode
-                    ? 'text-white font-bold text-lg'
-                    : 'text-gray-800 font-bold text-lg'
-                }
-              >
+                                <p
+                                  className={
+                                    darkMode
+                                      ? 'text-white font-bold text-lg'
+                                      : 'text-gray-800 font-bold text-lg'
+                                  }
+                                >
 
-                👤 {student.firstName} {student.lastName}
+                                  👤 {student.firstName} {student.lastName}
 
-              </p>
+                                </p>
 
-              {/* EMAIL */}
-              <p
-                className={
-                  darkMode
-                    ? 'text-gray-300 text-sm mt-1 break-all'
-                    : 'text-gray-600 text-sm mt-1 break-all'
-                }
-              >
+                                <p
+                                  className={
+                                    darkMode
+                                      ? 'text-gray-300 text-sm mt-1 break-all'
+                                      : 'text-gray-600 text-sm mt-1 break-all'
+                                  }
+                                >
 
-                📧 {student.email}
+                                  📧 {student.email}
 
-              </p>
+                                </p>
 
-            </div>
+                              </div>
 
-          ))
-        }
+                            ))
+                          }
+
+                        </div>
+
+                      ) : (
+
+                        <p
+                          className={
+                            darkMode
+                              ? 'text-gray-400'
+                              : 'text-gray-500'
+                          }
+                        >
+
+                          No students enrolled yet
+
+                        </p>
+
+                      )
+                    }
+
+                  </div>
+
+                  {/* VIDEO */}
+                  <div className="mb-6">
+
+                    <h4 className="font-bold text-lg mb-3">
+
+                      🎥 Demo Video
+
+                    </h4>
+
+                    {course.video ? (
+
+                      <video
+                        controls
+                        className="w-full rounded-2xl shadow-lg"
+                      >
+
+                        <source src={course.video} />
+
+                      </video>
+
+                    ) : (
+
+                      <div
+                        className={
+                          darkMode
+                            ? 'bg-gray-800 rounded-2xl p-6 text-center'
+                            : 'bg-gray-100 rounded-2xl p-6 text-center'
+                        }
+                      >
+
+                        <div className="text-5xl mb-3">
+
+                          🎬
+
+                        </div>
+
+                        <p
+                          className={
+                            darkMode
+                              ? 'text-gray-400'
+                              : 'text-gray-500'
+                          }
+                        >
+
+                          No demo video uploaded
+
+                        </p>
+
+                      </div>
+
+                    )}
+
+                  </div>
+
+                  {/* ACTION BUTTONS */}
+                  <div className="flex gap-4">
+
+                    {/* EDIT */}
+                    <button
+                      onClick={() =>
+                        navigate(
+                          `/edit-course/${course._id}`
+                        )
+                      }
+                      className="flex-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-white py-3 rounded-2xl font-bold hover:scale-[1.02] transition duration-300 shadow-lg"
+                    >
+
+                      ✏️ Edit
+
+                    </button>
+
+                    {/* DELETE */}
+                    <button
+                      onClick={() => {
+
+                        setShowDeleteModal(true);
+
+                        setSelectedCourse(course._id);
+
+                      }}
+                      className="flex-1 bg-gradient-to-r from-red-500 to-pink-500 text-white py-3 rounded-2xl font-bold hover:scale-[1.02] transition duration-300 shadow-lg"
+                    >
+
+                      🗑️ Delete
+
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        )}
 
       </div>
 
-    ) : (
-
-      <p
-        className={
-          darkMode
-            ? 'text-gray-400'
-            : 'text-gray-500'
-        }
-      >
-
-        No students enrolled yet
-
-      </p>
-
-    )
-  }
-
-</div>
       {/* DELETE MODAL */}
       {
         showDeleteModal && (
@@ -406,7 +504,6 @@ function InstructorDashboard() {
               {/* BUTTONS */}
               <div className="flex gap-4">
 
-                {/* CANCEL */}
                 <button
                   onClick={() =>
                     setShowDeleteModal(false)
@@ -418,7 +515,6 @@ function InstructorDashboard() {
 
                 </button>
 
-                {/* DELETE */}
                 <button
                   onClick={() => {
 
